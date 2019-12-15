@@ -32,4 +32,151 @@
 		#每一个时间为一个784维的向量
 		
 		processed_sequences = TimeDistributed(model)(input_sequences)
-		
+
+# 三： 多输入多输出模型
+	# 较早地在模型中使用主损失函数，是深度学习模型的一个良好正则方法。
+	from keras.layers import Input, Embeding, LSTM, Dense
+	from Keras.models import Model 
+	
+	# 标题输入， 接收含有100个整数的序列， 每个整数在1到10000之间
+	# 注意我们可以通过传递一个"name" 参数来命名任何层
+	main_input = Input(shape=(100, ), dtype='int32', name='main_input')
+	#Embeding 层将输入序列编码为一个稠密的向量序列
+	# 每个向量的维度为512
+	x = Embeding(output_dim=512, input_dim=10000, input_length=100)(main_input)
+	
+	# LSTM层把向量序列转换为单个向量
+	# 它包含整个序列的上下文信息
+	lstm_out = LSTM(32)(x)  # 转换之后就得到了一个输出序列的张量
+	
+	# 下面插入辅助的损失， 这将会使得即使在模型主损失很高的情况下，LSTM层和Embeding层都可以平稳的训练
+	auxiliary_output = Dense(1, activation='sigmoid', name='aux_output')(lstm_out)
+	#这个明明是一个输出， 是一个中途输出
+	
+	# 下面将辅助数据和LSTM层的输出连接起来， 输入到模型中
+	uxiliary_input = Input(shape(5, ), name='aux_input')
+	x = keras.layers.concatenate([lstm_out, uxiliary_input])  # 就是使用的这个函数将lstm层的输出和辅助数据连接的
+	
+	# 下面将堆叠多个全连接网络
+	x = Dense(64, activation='relu')(x)
+	x = Dense(64, activation='relu')(x)
+	x = Dense(64, activation='relu')(x)
+	
+	# 最后添加主要的逻辑回归层
+	main_output = Dense(1, activation='sigmoid', name='main_output')(x)
+	
+	#  上面的部分都是神经网络模型的搭建， 下面就是编译模型、 训练模型、 模型打分
+	model = Model(inputs=[main_input, uxiliary_input], outputs=[main_output, auxiliary_output])
+	model.compile(optimizer='rmsprop', loss='binary_crossentropy', loss_weights=[1., 0.2])
+	#  注意了不同的输出都需要给定loss 和 lossweight， 给一个就是给所有的输出相同的loss
+	
+	model.fit([headline_data, additional_data], [labels, labels],epochs=50, batch_size=32)
+	
+	
+	# 下面的写法等价
+	
+	model.compile(optimizer='rmsprop',
+              loss={'main_output': 'binary_crossentropy', 'aux_output': 'binary_crossentropy'},
+              loss_weights={'main_output': 1., 'aux_output': 0.2})
+
+	# 然后使用以下方式训练：
+	model.fit({'main_input': headline_data, 'aux_input': additional_data},
+		  {'main_output': labels, 'aux_output': labels},
+		  epochs=50, batch_size=32)
+
+# 三： 共享网络层
+
+	# 1. 函数式api还可以实现共享网络层的模型
+	import keras
+	from keras.models import Model 
+	from keras.layers import Input, LSTM, Embeding, Dense
+	
+	tweet_a = Input(shape=(280, 256))
+	tweet_b = Input(shape=(280, 256))
+	
+	#  要在不同的输入上共享同一个层， 只需要实例化该层一次，然后根据需要传入相应的输入即可
+	shared_lstm = LSTM(64) #  这里可以输入一个矩阵， 并返回一个64维的向量
+	
+	# 当我们重用相同图层的实例多次， 图层的权重也会被重用（其实他就是同一层）
+	encoded_a = shared_lstm(tweet_a)
+	encoded_b = shared_lstm(tweet_b)
+	
+	# 然后再连接两个向量
+	merged_vector = keras.layers.concatenate([encoded_a, encoded_b], axis=-1)
+	
+	# 再在上面添加一个逻辑回归层
+	predictions = Dense(1, activation='sigmoid')(merged_vector)
+	
+	model = Model(inputs=[tweet_a, tweet_b], outputs=predictions)
+	model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acccuracy'])
+	model.fit([data_a, data_b], labels, epochs=10)
+	
+# 四： 案例
+	# 1. inception 模型
+	from keras.layers import Conv2D, MaxPooling2D, Input
+	
+	input_img = Input(shape=(256, 256, 3))
+	tower_1 = Conv2D(64, (1, 1), activation='relu', padding='same')(input_img)
+	tower_1 = Conv2D(64, (3, 3), activation='relu', padding='same')(tower_1)
+	
+	tower_2 = Conv2D(64, (1, 1), activation='relu', padding='same')(input_img)
+	tower_2 = Conv2D(64, (5, 5), activation='relu', padding='same')(tower_2)
+	
+	tower_3 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(input_img)
+	tower_3 = Conv2D(64, (1, 1), activation='relu', padding='same')(tower_3)
+	
+	output = keras.layers.convatenate([tower_1, tower_2, tower_3], axixs=1)
+	
+	
+	# 2. 卷积层上的残差连接
+	from keras.layers import Input, Conv2D
+	x = Input(shape=(256, 256, 3))
+	y = Conv2D(3, (3, 3), activation='relu', padding='same')(x)
+	z = keras.layers.add([x, y])  # 这里将第一层的输出结果与最后一层的输出结果直接相加到一起了
+	# 由此实现了残差的思想
+	
+	
+	# 3. 共享视觉模型
+	# 该模型在两个输入上重复使用同一个图像处理模块
+	from keras.layers import Conv2D, MaxPooling2D, Input, Dense, Flatten
+	from keras.models importg Model
+	# 首先定义视觉模型
+	digit_input = Input(shape=(27, 27 ,1))
+	x = Conv2D(64, (3, 3))(digit_input)
+	x = Conv2D(64, (3, 3))(x)
+	x = MaxPooling2D((2, 2))(x)
+	out = Flatten()(x)  # 要牢牢记住， 所有的layer都是对象， 不能将Flatten当作函数给他参数
+	vision_model = Model(digit_input, out)
+	
+	# 下面定义区分数字的模型
+	digit_a = Input(shape=(27, 27, 1))
+	digit_b = Input(shape=(27, 27, 1))
+	out_a = vision_model(digit_a)
+	out_b = vision_model(digit_b)
+	
+	concatenated = keras.layers.concatenate([out_a, out_b])
+	out = Dense(1, activation='sigmoid')(concatenated)
+	
+	classification_model = Model([digit_a, digit_b], out)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
