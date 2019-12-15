@@ -1,0 +1,13 @@
+#1. keras网络层的共同函数：
+ 	#layer.get_weights(): 放回当前层的权重矩阵列表
+	#layer.set_weights(weights): 设置当前层的权重
+	layer.get_config()： 返当前层的配置， 以字典的形式
+	
+	layer = Dense(32)
+	config = layer.get_config()
+	reconstructed_layer = Dense.from_config(config)
+	
+	from keras import layers
+	config = layer.get_config()
+	layer = layers.deserialize({"class_name": layerf._class_._name_, "config"： config})
+	
