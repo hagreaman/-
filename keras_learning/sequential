@@ -1,1 +1,31 @@
 
+	#一、keras Sequential顺序模型结构
+	#  第一步定义序列keras顺序模型
+ 	
+	1. 		keras.models import Sequential 
+	 		from keras.layers import Dense, Activation 
+			 # 	使用构造函数的模式， 实例化一个序列模型， 一帮都不适用
+			model = Sequential([
+				Dense(32, input_shape=(784,)),
+				Activation('relu'),
+				Dense(10),
+				Activation('softmax'),])
+	2. 一般使用add将各个层添加到模型中
+			model = Sequential()
+			model.add(Dense(32, input_dim = 784))
+			model.add(Activation('relu'))
+			
+	#  二、 指定输入数据的尺寸
+	# 顺序模型的第一层（也仅仅是第一层）需要明确的指定输入数据的尺寸
+	 1. 	model.Sequential()  #定义顺序模型
+	 		model.add(Dense(32, input_shape=(784, )))  # 模型的第一层 这里是一个Dense层， 必须指定输入数据的尺寸
+			# 这里的尺寸是batch_size = 32, input_shape=(784, None)  
+			# 下面的代码和上面代码等价
+			model = sequential()
+			model.add(Dense(32, input_dim=784))
+			
+	# 三、 模型编译
+	# 神经网络的结构构造完毕之后， 需要配置模型的参数， 这一步就是编译了
+	#  模型编译需要就收三个参数, 分别是： optimizer 优化器， 损失函数loss,  评估标准metrics
+	1. 		
+	
