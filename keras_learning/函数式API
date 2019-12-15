@@ -1,1 +1,35 @@
+# 一： 全连接网络
+	# 网络层的实例是可以调用的， 它以张量为参数， 并且返回一个参数
+	# 输入和输出均为张量， 他们都可以用来定义一个模型（model）
+	
+	1. 	from keras.layers import Input, Dense
+		from keras.models import Models # 这里就不再是顺序模型了
+		
+		#  下面的部分是自定义网络的模型
+		inputs = Input(shape=(784, )) # 这里返回一个张量， inputs就是一个张量
+		x = Dense(64, activation='relu')(inputs) # 网络层返回的实例张量可以被调用， 同时Dense()实例化的对象也可以调用
+		# 它以一个张量作为参数 ， 同时返回一个张量
+		x = Dense(64, activation='relu')(x)
+		predictions = Dense(10, activation='softmax')(x) # 这里定义了输出
 
+		
+		# 下面的部分创建一个包含输入层和三个全连接层的模型
+		model = Model(inputs=inputs, outputs=predictions)  3 这一部分有点像tensorflow张量之间是相互依赖的
+		model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+		model.fit(data, labels) #开始训练了
+		
+
+# 二： 所有的模型都可以调用， 就像网络层一样
+	 # 可以将任何模型看作一个layer， 然后通过传递一个张量来调用它
+	 # 调用模型的时候， 不仅可以重用模型的结构， 还重用了模型的的权重
+	 
+	1.	x = Input(shape=(784, ))
+	 	y = model(x)
+	
+	2. 	from keras.layer import TimeDistributed
+		
+		input_sequences = Input(shape=(20, 784)) # 输入张量是20个时间步的序列
+		#每一个时间为一个784维的向量
+		
+		processed_sequences = TimeDistributed(model)(input_sequences)
+		
