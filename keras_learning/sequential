@@ -26,6 +26,25 @@
 			
 	# 三、 模型编译
 	# 神经网络的结构构造完毕之后， 需要配置模型的参数， 这一步就是编译了
-	#  模型编译需要就收三个参数, 分别是： optimizer 优化器， 损失函数loss,  评估标准metrics
-	1. 		
+	# 模型编译需要就收三个参数, 分别是： optimizer 优化器， 损失函数loss,  评估标准metrics
+	1. 	#针对多分类问题, 第一个参数是rmsprop梯度下降的优化算法， 第二个是交叉熵， 第三个是准确率， 分类人物的metrics一般都是accuarcy
+		model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+	2.	# 二分类问题
+		model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+	3.	# 回归问题， 回归问题的损失函数是均方误差， 评价标准就没了
+		model.compile(optimizer='rmsprop', loss='mse')
+	4.	# 自定义评估标准函数
+		import keras.backend as K
+		def mean_pred(y_true, y_pred):
+			retrun K.mean(y_pred)
+		model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy', mean_pred])
+	
+	# 四、 模型训练
+	#  模型训练的时候就需要加入训练集和测试集数据了
+	1.	# 对于具有两个类的当输入模型（二进制分类）
+		model = Sequential()
+		model.add(Dense(32, activation='relu', input_dim=100))
+		model.add(Dense(1, activation='sigmoid'))  # 模型的第二层就不需要指定输入数据集的大小了
+		
+		
 	
