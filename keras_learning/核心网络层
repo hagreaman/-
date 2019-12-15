@@ -1,0 +1,58 @@
+# 1.      Dense 常用的全连接层
+          keras.layers.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform', bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None, kernel_constraint=None, bias_constraint=None)
+          # Dense 实现的操作： output = activation(dot(input, kernel) + bias) 其中 activation 是按逐个元素计算的激活函数，kernel 是由网络层创建的权值矩阵，以及 bias 是其创建的偏置向量 (只在 use_bias 为 True 时才有用)。
+          
+          model = Sequential()
+          model.add(Dense(32, input_shape=(16,)))
+          # 现在模型就会以尺寸为（*， 16）的数组作为输入
+          # 输出数组的形状 （*， 32）
+          #  从上可以看出， 输入数据的行数是没有限定的， 自然而然的输出数据的行数也就不用指定
+          #参数说明：
+            units: 输出空间的维度， 记住第一个参数是输出空间维度
+            activation: 激活函数
+          #输入尺寸： 尺寸: (batch_size, ..., input_dim)， 2D情况下： (batch_size, input_dim) (batch_size, input_dim) 
+          #输出尺寸：(batch_size, ..., units) ， 2D情况下： (batch_size, units)
+           
+#2.		Activtion将激活函数应用于输出
+		keras.layers.Activation(activation)
+
+#3. 		Dropout 将Dropout应用于输出
+		keras.layers.Dropout(rate, noise_shape, seed=None)
+		Dropout 包括在训练中每次更新时， 将输入单元的按比率随机设置为 0， 这有助于防止过拟合。
+          	#参数说明： 
+			rate: 需要丢弃输入的比例
+#4. 		Flatten: 将输入展开拉平， 不影响批量大小
+		keras.layers.Flatten(data_format=None)
+
+#5.		Input: 用于实例化keras张量, 其实就是用来定义一个张量对象而已
+		keras.engine.input_layer.Input()
+          
+ #6.		Reshape    将输入重新调整为特定的尺寸。
+ 		keras.layers.Reshape(target_shape)
+      		#target_shape: 目标尺寸。整数元组。 不包含表示批量的轴
+		
+
+		  model = Sequential()
+		  model.add(Reshape( (3, 4),  input_shape(12, ) ) )
+		# 现在：model.output_shape == (None, 3, 4)
+		# 注意： `None` 是批表示的维度
+		 # 作为 Sequential 模型的中间层
+		model.add(Reshape((6, 2)))
+		# 现在： model.output_shape == (None, 6, 2)
+
+		# 还支持使用 `-1` 表示维度的尺寸推断
+		model.add(Reshape((-1, 2, 2)))
+		# 现在： model.output_shape == (None, 3, 2, 2)
+
+#7		permute: 根据给定的模式， 置换输入的维度
+		keras.layers.Permute(dims)
+		# dims: 整数元组。置换模式，不包含样本维度。 索引从 1 开始。 例如, (2, 1) 置换输入的第一和第二个维度。
+		
+		model = Sequential()
+		model.add(Permute((2, 1), input_shape=(10, 64)))
+		# 现在： model.output_shape == (None, 64, 10)
+		# 注意： `None` 是批表示的维度
+          
+          
+          
+          
