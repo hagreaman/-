@@ -1,1 +1,39 @@
+# 一：Sequential 模型方法
+#1.  	compile用于配置训练模型
+			compile(optimizer, loss=None, metrics=None, loss_weights=None, sample_weight_mode=None, weighted_metrics=None, target_tensors=None)
 
+#2.		fit以固定数量的轮次（数据集上的迭代）训练模型。
+			fit(x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, validation_data=None, shuffle=True, class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None)
+		# 返回： 一个History对象， 其History.hitory属性是连续epoch训练损失和评估值， 以及验证集损失和评估值的记录
+
+#3.			evaluate在测试模式，返回误差值和评估标准值， 计算逐批次进行
+			evaluate(x=None, y=None, batch_size=None, verbose=1, sample_weight=None, steps=None)
+		#返回： 标量测试误差（如果模型只有单个输出且没有评估指标）或标量列表（如果模型具有多个输出和/或指标）。 属性 model.metrics_names 将提供标量输出的显示标签。
+
+#4.			predict为输入样本生成预测， 计算逐批次进行
+			predict(x, batch_size=None, verbose=0, steps=None)
+		#返回： 预测的Numpy数组 
+#5. 		train_on_batch一批样本的单次梯度更新
+			train_on_batch(x, y, sample_weight=None, class_weight=None)
+		#返回： 标量训练误差（如果模型只有单个输出且没有评估指标）或标量列表（如果模型具有多个输出和/或指标）。 属性 model.metrics_names 将提供标量输出的显示标签。
+		
+#6.			test_on_batchz在一批样本上评估模型
+			test_on_batch(x, y, sample_weight=None)
+		#返回： 标量测试误差（如果模型只有单个输出且没有评估指标）或标量列表（如果模型具有多个输出和/或指标）。 属性 model.metrics_names 将提供标量输出的显示标签。
+		
+#7.			predict_on_batch返回一批样本的模型预测值
+			predict_on_batch(x)
+		#预测值numpy的数组
+#8.			fit_generator 使用Python生成器或者Sequence实例逐批生成的数据， 按批次训练模型
+			fit_generator(generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None, validation_data=None, validation_steps=None, class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False, shuffle=True, initial_epoch=0)
+		#参数：generator: 一个生成器或 Sequence (keras.utils.Sequence) 对象的实例，以避免在使用多进程时出现重复数据。 
+		#返回：一个 History 对象。其 History.history 属性是连续 epoch 训练损失和评估值，以及验证集损失和评估值的记录（如果适用）。
+
+
+			
+			
+			
+			
+			
+			
+			
