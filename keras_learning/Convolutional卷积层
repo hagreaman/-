@@ -1,0 +1,46 @@
+#1.   Conv1D 1D卷积层（如时序卷积）
+      keras.layers.Conv1D(filters, kernel_size, strides=1, padding='valid', data_format='channels_last', dilation_rate=1, activation=None, use_bias=True, kernel_initializer='glorot_uniform', bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None, kernel_constraint=None, bias_constraint=None)
+      # 该层创建了一个卷积核， 该卷积核以单个空间（或时间）维上的层输入进行卷积， 以生成输出张量
+      #filter： 输出空间的维度， 即卷积核的个数
+      #kernel_size： 一个整数， 卷积窗口的长度
+      #padding: valid 不填充， same: 填充输入以使输出与输入大小相同，  causal： 因果（膨胀）卷积
+      
+#2.  Conv2D: 2D卷积层（对图像的空间卷积）
+      keras.layers.Conv2D(filters, kernel_size, strides=(1, 1), padding='valid', data_format=None, dilation_rate=(1, 1), activation=None, use_bias=True, kernel_initializer='glorot_uniform', bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None, kernel_constraint=None, bias_constraint=None)
+      #该层创建了一个卷积核， 该卷积核对层输入进行卷积， 以生成输出张量。
+      
+#3.  SeparableConv1D深度方向的可分离1D卷积      
+     keras.layers.SeparableConv1D(filters, kernel_size, strides=1, padding='valid', data_format='channels_last', dilation_rate=1, depth_multiplier=1, activation=None, use_bias=True, depthwise_initializer='glorot_uniform', pointwise_initializer='glorot_uniform', bias_initializer='zeros', depthwise_regularizer=None, pointwise_regularizer=None, bias_regularizer=None, activity_regularizer=None, depthwise_constraint=None, pointwise_constraint=None, bias_constraint=None)
+     #可分离的卷积的操作包括，首先执行深度方向的空间卷积 （分别作用于每个输入通道），紧接一个将所得输出通道 混合在一起的逐点卷积。depth_multiplier 参数控 制深度步骤中每个输入通道生成多少个输出通道。
+#4.  SeparableConv2D
+
+#5.  DepthwiseConv2D深度可分离2D卷积
+     keras.layers.DepthwiseConv2D(kernel_size, strides=(1, 1), padding='valid', depth_multiplier=1, data_format=None, activation=None, use_bias=True, depthwise_initializer='glorot_uniform', bias_initializer='zeros', depthwise_regularizer=None, bias_regularizer=None, activity_regularizer=None, depthwise_constraint=None, bias_constraint=None)
+      
+#6.  Cropping1D 1D输入的裁剪层(例如时间维度)， 沿着时间维度（第一个轴）裁剪
+      keras.layers.Cropping1D(cropping(1, 1))
+      
+#7.  Cropping2D 2D输入的裁剪层(例如图像)， 沿着空间维度裁剪, 即高度和宽度
+      keras.layers.Cropping1D(cropping(1, 1))
+      
+#8.   MaxPooling1D 对于时序数据的最大池化
+      keras.layers.MaxPooling1D(pool_size=2, strides=None, padding='valid', data_format='channels_last')
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
